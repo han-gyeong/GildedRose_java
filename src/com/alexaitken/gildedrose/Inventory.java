@@ -2,24 +2,15 @@ package com.alexaitken.gildedrose;
 
 import com.alexaitken.gildedrose.policy.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Inventory {
 
 	private Item[] items;
 	
-	private List<QualityPolicy> qualityPolicy = new ArrayList<>();
+	private QualityPolicyContainer qualityPolicyContainer = new QualityPolicyContainer();
 
 	public Inventory(Item[] items) {
 		super();
 		this.items = items;
-
-		qualityPolicy.add(new CheeseQualityPolicy());
-		qualityPolicy.add(new ConjuredQualityPolicy());
-		qualityPolicy.add(new PreservedQualityPolicy());
-		qualityPolicy.add(new TicketQualityPolicy());
-		qualityPolicy.add(new CommonQualityPolicy());
 	}
 
 	public Inventory() {
@@ -37,12 +28,8 @@ public class Inventory {
 
 	public void updateQuality() {
 		for (Item item : items) {
-			for (QualityPolicy policy : qualityPolicy) {
-				if (policy.support(item)) {
-					policy.calculateQuality(item);
-					break;
-				}
-			}
+			QualityPolicy qualityPolicy = qualityPolicyContainer.getPolicy(item);
+			qualityPolicy.calculateQuality(item);
 		}
 	}
 }
